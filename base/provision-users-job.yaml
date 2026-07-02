@@ -46,7 +46,7 @@ spec:
               EMAIL="rbanda@redhat.com"
               NAME="Raghuram Banda"
               ROLE="owner"
-              PASSWORD=$(cat /secrets/rbanda@redhat.com 2>/dev/null || echo "")
+              PASSWORD=$(cat /secrets/rbanda 2>/dev/null || echo "")
               if [ -n "$PASSWORD" ]; then
                 echo "Provisioning: $EMAIL ($NAME) as $ROLE"
                 RESULT=$(curl -sf -X POST "$PAPERCLIP_URL/api/auth/sign-up/email" \
@@ -68,7 +68,7 @@ spec:
               EMAIL="mlivings@redhat.com"
               NAME="Monica Livingston"
               ROLE="owner"
-              PASSWORD=$(cat /secrets/mlivings@redhat.com 2>/dev/null || echo "")
+              PASSWORD=$(cat /secrets/mlivings 2>/dev/null || echo "")
               if [ -n "$PASSWORD" ]; then
                 echo "Provisioning: $EMAIL ($NAME) as $ROLE"
                 RESULT=$(curl -sf -X POST "$PAPERCLIP_URL/api/auth/sign-up/email" \
