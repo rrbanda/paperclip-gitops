@@ -1,0 +1,112 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: paperclip-build
+  labels:
+    app: paperclip
+spec:
+  params:
+    - name: git-url
+      type: string
+      default: "https://github.com/rrbanda/paperclip.git"
+    - name: git-revision
+      type: string
+      default: "main"
+    - name: image-name
+      type: string
+      default: "image-registry.openshift-image-registry.svc:5000/paperclip/paperclip:latest"
+    - name: dockerfile
+      type: string
+      default: "k8s/Dockerfile.openshift"
+  workspaces:
+    - name: source
+  tasks:
+    - name: fetch-source
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: source
+
+    - name: build-image
+      runAfter: ["fetch-source"]
+      taskRef:
+        name: buildah
+        kind: ClusterTask
+      params:
+        - name: IMAGE
+          value: $(params.image-name)
+        - name: DOCKERFILE
+          value: $(params.dockerfile)
+        - name: TLSVERIFY
+          value: "false"
+      workspaces:
+        - name: source
+          workspace: source
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: atlas-build
+  labels:
+    app: atlas
+spec:
+  params:
+    - name: git-url
+      type: string
+      default: "https://github.com/rrbanda/atlas.git"
+    - name: git-revision
+      type: string
+      default: "main"
+    - name: image-name
+      type: string
+      default: "image-registry.openshift-image-registry.svc:5000/paperclip/atlas:latest"
+  workspaces:
+    - name: source
+  tasks:
+    - name: fetch-source
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: source
+
+    - name: build-image
+      runAfter: ["fetch-source"]
+      taskRef:
+        name: buildah
+        kind: ClusterTask
+      params:
+        - name: IMAGE
+          value: $(params.image-name)
+        - name: DOCKERFILE
+          value: "Dockerfile"
+        - name: TLSVERIFY
+          value: "false"
+      workspaces:
+        - name: source
+          workspace: source
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pipeline-workspace
+  labels:
+    app: paperclip
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 5Gi

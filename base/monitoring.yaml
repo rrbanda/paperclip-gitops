@@ -1,0 +1,61 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: paperclip
+  labels:
+    app: paperclip
+spec:
+  selector:
+    matchLabels:
+      app: paperclip
+  endpoints:
+    - port: "3100"
+      path: /api/health
+      interval: 30s
+      scheme: http
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: paperclip-alerts
+  labels:
+    app: paperclip
+spec:
+  groups:
+    - name: paperclip.rules
+      rules:
+        - alert: PaperclipDown
+          expr: up{job="paperclip"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Paperclip is down"
+            description: "Paperclip has been unreachable for more than 2 minutes."
+
+        - alert: PaperclipPodRestarting
+          expr: increase(kube_pod_container_status_restarts_total{namespace="paperclip", container="paperclip"}[1h]) > 3
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Paperclip pod restarting frequently"
+            description: "Paperclip has restarted {{ $value }} times in the last hour."
+
+        - alert: PostgresDown
+          expr: up{job="paperclip-db"} == 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "PostgreSQL is down"
+            description: "PostgreSQL database has been unreachable for more than 1 minute."
+
+        - alert: PaperclipHighMemory
+          expr: container_memory_usage_bytes{namespace="paperclip", container="paperclip"} / container_spec_memory_limit_bytes{namespace="paperclip", container="paperclip"} > 0.85
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Paperclip memory usage high"
+            description: "Paperclip is using {{ $value | humanizePercentage }} of its memory limit."

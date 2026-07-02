@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: paperclip
 
 resources:
+  # Core infrastructure
   - namespace.yaml
   - postgres-service.yaml
   - postgres-statefulset.yaml
@@ -12,6 +13,28 @@ resources:
   - paperclip-service.yaml
   - paperclip-route.yaml
   - paperclip-buildconfig.yaml
+
+  # User provisioning (ESO + Vault)
   - users-configmap.yaml
   - external-secret.yaml
   - provision-users-job.yaml
+
+  # Company config auto-sync
+  - sync-company-job.yaml
+
+  # ATLAS dashboard
+  - atlas.yaml
+
+  # Eval portal
+  - eval-portal.yaml
+
+  # Security
+  - network-policies.yaml
+  - resource-quota.yaml
+
+  # Operations
+  - postgres-backup.yaml
+  - monitoring.yaml
+
+  # CI/CD
+  - tekton-pipelines.yaml

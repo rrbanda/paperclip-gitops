@@ -1,0 +1,59 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  labels:
+    app: paperclip-db
+spec:
+  schedule: "0 2 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: postgres:17-alpine
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -e
+                  TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+                  BACKUP_FILE="/backups/paperclip_${TIMESTAMP}.sql.gz"
+
+                  echo "Starting backup at $(date)"
+                  pg_dump -h paperclip-db -U paperclip -d paperclip | gzip > "$BACKUP_FILE"
+                  echo "Backup written to: $BACKUP_FILE ($(du -h "$BACKUP_FILE" | cut -f1))"
+
+                  # Retain only last 7 backups
+                  ls -t /backups/paperclip_*.sql.gz | tail -n +8 | xargs rm -f 2>/dev/null || true
+                  echo "Backup complete. Current backups:"
+                  ls -lh /backups/paperclip_*.sql.gz
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: paperclip-secrets
+                      key: POSTGRES_PASSWORD
+              volumeMounts:
+                - name: backups
+                  mountPath: /backups
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: paperclip-backups
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paperclip-backups
+  labels:
+    app: paperclip-db
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 2Gi

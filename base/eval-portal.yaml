@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eval-portal
+  labels:
+    app: eval-portal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eval-portal
+  template:
+    metadata:
+      labels:
+        app: eval-portal
+    spec:
+      containers:
+        - name: portal
+          image: image-registry.openshift-image-registry.svc:5000/paperclip/eval-portal:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eval-portal
+  labels:
+    app: eval-portal
+spec:
+  selector:
+    app: eval-portal
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: eval-portal
+  labels:
+    app: eval-portal
+spec:
+  to:
+    kind: Service
+    name: eval-portal
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: eval-portal
+  labels:
+    app: eval-portal
+spec:
+  source:
+    type: Binary
+    binary: {}
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: eval-portal:latest
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: eval-portal
+  labels:
+    app: eval-portal
