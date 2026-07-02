@@ -8,7 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 COMPANY_DIR="$REPO_ROOT/company"
 
-PAPERCLIP_URL="${PAPERCLIP_URL:-https://paperclip-paperclip.apps.cluster-4l6x6.4l6x6.sandbox1213.opentlc.com}"
+PAPERCLIP_URL="${PAPERCLIP_URL:-https://PAPERCLIP_ROUTE_URL}"
 COMPANY_ID="${COMPANY_ID:-52d75bd0-d5db-4aa3-ae5b-a991111c4e00}"
 
 echo "=== Paperclip Company Export ==="

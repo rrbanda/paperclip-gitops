@@ -64,6 +64,6 @@ dev (auto-sync) --> staging (1 approval) --> prod (2 approvals)
 
 ## Links
 
-- ArgoCD: https://openshift-gitops-server-openshift-gitops.apps.cluster-4l6x6.4l6x6.sandbox1213.opentlc.com
-- Paperclip: https://paperclip-paperclip.apps.cluster-4l6x6.4l6x6.sandbox1213.opentlc.com
-- ATLAS: https://atlas-paperclip.apps.cluster-4l6x6.4l6x6.sandbox1213.opentlc.com
+- ArgoCD: (see your cluster's `openshift-gitops` route)
+- Paperclip: (see your cluster's `paperclip` route)
+- ATLAS: (see your cluster's `atlas` route)

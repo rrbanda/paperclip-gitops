@@ -94,7 +94,7 @@ git push -> PR -> review -> merge to main
 
 | I want to... | How |
 |--------------|-----|
-| View pilot KPIs | ATLAS Dashboard (https://atlas-paperclip.apps.cluster-4l6x6.4l6x6.sandbox1213.opentlc.com) |
+| View pilot KPIs | ATLAS Dashboard (your cluster's `atlas` route) |
 | Review business case | ATLAS -> Business Case page |
 | See the agent org chart | Paperclip UI -> Agents page |
 
