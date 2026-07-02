@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: deny-all-default
+  name: deny-all-ingress
 spec:
   podSelector: {}
   policyTypes:
@@ -27,6 +27,11 @@ spec:
         - podSelector:
             matchLabels:
               app: atlas
+      ports:
+        - port: 3100
+          protocol: TCP
+    - from:
+        - podSelector: {}
       ports:
         - port: 3100
           protocol: TCP
@@ -81,21 +86,8 @@ spec:
       ports:
         - port: 5432
           protocol: TCP
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-dns
-spec:
-  podSelector: {}
-  ingress: []
-  egress:
-    - to:
-        - namespaceSelector: {}
+    - from:
+        - podSelector: {}
       ports:
-        - port: 53
-          protocol: UDP
-        - port: 53
+        - port: 5432
           protocol: TCP
-  policyTypes:
-    - Egress
