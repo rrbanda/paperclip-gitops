@@ -1,0 +1,18 @@
+# Platform Engineering team owns infrastructure
+/platform/      @rrbanda
+/secrets/       @rrbanda
+
+# Agent Engineering owns agent definitions and skills
+/agents/        @rrbanda
+
+# Team Lead / Operations owns org structure
+/operations/    @rrbanda
+
+# Documentation requires review
+/docs/          @rrbanda
+
+# Scripts require platform review
+/scripts/       @rrbanda
+
+# CI/CD workflows require platform review
+/.github/       @rrbanda

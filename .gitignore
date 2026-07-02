@@ -1,6 +1,6 @@
 # Secrets - never commit real values
-secrets/*.yaml
-!secrets/secret-template.yaml.example
+secrets/**/*.yaml
+!secrets/external-secrets/*.yaml
 *.key
 *.pem
 *.p12
@@ -26,3 +26,6 @@ node_modules/
 # Temp files
 *.tmp
 *.bak
+
+# Kustomize output
+kustomize-output/

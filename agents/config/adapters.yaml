@@ -1,0 +1,98 @@
+# Agent Adapter Configuration
+# Non-sensitive adapter settings for all agents.
+# Secret values (API keys, tokens) are stored in Vault, not here.
+
+defaults:
+  adapter: gemini_local
+  heartbeat:
+    enabled: true
+    wakeOnDemand: true
+
+agents:
+  ai-sales-operations-lead:
+    adapter: gemini_local
+    desiredSkills:
+      - paperclip-coordination
+      - task-planning
+
+  rhoai-solutions-lead:
+    adapter: gemini_local
+    desiredSkills:
+      - paperclip-coordination
+
+  pitch-builder:
+    adapter: gemini_local
+    desiredSkills:
+      - pitch-builder
+
+  rfq-response-agent:
+    adapter: gemini_local
+    desiredSkills:
+      - rfq-filler
+
+  sales-progress-monitor:
+    adapter: gemini_local
+    desiredSkills:
+      - salescloud-pipeline
+
+  openshift-attach-monitor:
+    adapter: gemini_local
+    desiredSkills:
+      - openshift-attach
+
+  rhoai-demo-navigator:
+    adapter: gemini_local
+    desiredSkills:
+      - rhoai-demo-navigator
+
+  field-ops-assistant:
+    adapter: gemini_local
+    desiredSkills:
+      - field-ops
+
+  sales-simulation-engine:
+    adapter: gemini_local
+    desiredSkills:
+      - sales-simulation
+
+  # Chief of Staff agents (all use same skill)
+  monica-cos:
+    adapter: gemini_local
+    desiredSkills:
+      - chief-of-staff
+
+  # Mortgage HTTP agents
+  mortgage-prospect-assistant:
+    adapter: http
+    config:
+      url: http://mortgage-ai-api.mortgage-ai.svc:8000/api/chat/message
+      method: POST
+      timeoutMs: 60000
+
+  mortgage-borrower-agent:
+    adapter: http
+    config:
+      url: http://mortgage-ai-api.mortgage-ai.svc:8000/api/borrower/chat/message
+      method: POST
+      timeoutMs: 60000
+
+  mortgage-loan-officer-agent:
+    adapter: http
+    config:
+      url: http://mortgage-ai-api.mortgage-ai.svc:8000/api/loan-officer/chat/message
+      method: POST
+      timeoutMs: 60000
+
+  mortgage-underwriter-agent:
+    adapter: http
+    config:
+      url: http://mortgage-ai-api.mortgage-ai.svc:8000/api/underwriter/chat/message
+      method: POST
+      timeoutMs: 60000
+
+  mortgage-ceo-agent:
+    adapter: http
+    config:
+      url: http://mortgage-ai-api.mortgage-ai.svc:8000/api/ceo/chat/message
+      method: POST
+      timeoutMs: 60000

@@ -1,0 +1,59 @@
+name: Validate PR
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          sudo mv kustomize /usr/local/bin/
+          pip install yamllint
+
+      - name: Lint YAML
+        run: |
+          yamllint -d '{extends: relaxed, rules: {line-length: {max: 200}}}' \
+            platform/ agents/ operations/ || true
+
+      - name: Validate Kustomize - dev
+        run: kustomize build platform/environments/dev > /dev/null
+
+      - name: Validate Kustomize - staging
+        run: kustomize build platform/environments/staging > /dev/null
+
+      - name: Validate Kustomize - prod
+        run: kustomize build platform/environments/prod > /dev/null
+
+      - name: Secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate AGENTS.md frontmatter
+        run: |
+          for f in agents/definitions/*/AGENTS.md; do
+            if [ -f "$f" ]; then
+              head -1 "$f" | grep -q "^---$" || { echo "FAIL: $f missing frontmatter"; exit 1; }
+              echo "OK: $f"
+            fi
+          done
+
+      - name: Validate users.yaml
+        run: |
+          python3 -c "
+          import yaml, sys
+          with open('operations/users.yaml') as f:
+            data = yaml.safe_load(f)
+          assert 'users' in data, 'Missing users key'
+          for u in data['users']:
+            assert 'email' in u, f'User missing email: {u}'
+            assert 'name' in u, f'User missing name: {u}'
+            assert 'role' in u, f'User missing role: {u}'
+          print(f'Valid: {len(data[\"users\"])} users declared')
+          "

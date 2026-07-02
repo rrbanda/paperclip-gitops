@@ -1,6 +1,0 @@
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: paperclip
-spec:
-  host: paperclip-paperclip.apps.cluster-4l6x6.4l6x6.sandbox1213.opentlc.com

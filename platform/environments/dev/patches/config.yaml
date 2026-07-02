@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperclip
+spec:
+  template:
+    spec:
+      containers:
+        - name: paperclip
+          env:
+            - name: PAPERCLIP_PUBLIC_URL
+              value: "https://paperclip-paperclip-dev.apps.cluster-4l6x6.4l6x6.sandbox1213.opentlc.com"

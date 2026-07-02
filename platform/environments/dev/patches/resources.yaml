@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperclip
+spec:
+  template:
+    spec:
+      containers:
+        - name: paperclip
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "32Gi"
+              cpu: "8"

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "enabledManagers": ["kubernetes"],
+  "kubernetes": {
+    "fileMatch": ["platform/.+\\.yaml$"]
+  },
+  "packageRules": [
+    {
+      "matchPackageNames": ["postgres", "postgresql"],
+      "groupName": "postgresql",
+      "automerge": false,
+      "schedule": ["before 6am on monday"]
+    },
+    {
+      "matchPackageNames": ["curlimages/curl"],
+      "groupName": "curl-images",
+      "automerge": true
+    }
+  ],
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 5,
+  "labels": ["dependencies", "renovate"]
+}

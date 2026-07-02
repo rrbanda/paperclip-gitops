@@ -1,0 +1,6 @@
+# Routine: Weekly Pipeline Report
+name: Weekly AI Pipeline Report
+schedule: "0 9 * * 1"
+timezone: America/New_York
+assignee: sales-progress-monitor
+description: Generate weekly AI pipeline report for all 11 Americas regions.

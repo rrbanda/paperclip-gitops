@@ -1,0 +1,99 @@
+# Agent Org Chart
+# Defines the reporting hierarchy (reportsTo relationships)
+
+hierarchy:
+  # Top-level leads (no manager)
+  ai-sales-operations-lead:
+    reportsTo: null
+  rhoai-solutions-lead:
+    reportsTo: null
+
+  # Direct reports to AI Sales Operations Lead
+  pitch-builder:
+    reportsTo: ai-sales-operations-lead
+  sales-progress-monitor:
+    reportsTo: ai-sales-operations-lead
+  openshift-attach-monitor:
+    reportsTo: ai-sales-operations-lead
+  sales-simulation-engine:
+    reportsTo: ai-sales-operations-lead
+  rfp-response-analyst:
+    reportsTo: ai-sales-operations-lead
+  competitive-intelligence-analyst:
+    reportsTo: ai-sales-operations-lead
+  customer-engagement-prep:
+    reportsTo: ai-sales-operations-lead
+  technical-content-writer:
+    reportsTo: ai-sales-operations-lead
+  workshop-demo-builder:
+    reportsTo: ai-sales-operations-lead
+
+  # Direct reports to RHOAI Solutions Lead
+  rfq-response-agent:
+    reportsTo: rhoai-solutions-lead
+  rhoai-demo-navigator:
+    reportsTo: rhoai-solutions-lead
+  field-ops-assistant:
+    reportsTo: rhoai-solutions-lead
+  agentic-ai-architect:
+    reportsTo: rhoai-solutions-lead
+  architecture-designer:
+    reportsTo: rhoai-solutions-lead
+  evaluation-and-safety-engineer:
+    reportsTo: rhoai-solutions-lead
+  inference-and-serving-expert:
+    reportsTo: rhoai-solutions-lead
+  migration-and-modernization-guide:
+    reportsTo: rhoai-solutions-lead
+  poc-and-sizing-calculator:
+    reportsTo: rhoai-solutions-lead
+  training-and-tuning-specialist:
+    reportsTo: rhoai-solutions-lead
+
+  # Chief of Staff agents (all report to AI Sales Operations Lead)
+  monica-cos:
+    reportsTo: ai-sales-operations-lead
+  raghuram-cos:
+    reportsTo: ai-sales-operations-lead
+  brian-cos:
+    reportsTo: ai-sales-operations-lead
+  patrick-cos:
+    reportsTo: ai-sales-operations-lead
+  jennifer-cos:
+    reportsTo: ai-sales-operations-lead
+  jason-cos:
+    reportsTo: ai-sales-operations-lead
+  tarik-cos:
+    reportsTo: ai-sales-operations-lead
+  hemang-cos:
+    reportsTo: ai-sales-operations-lead
+  julio-cos:
+    reportsTo: ai-sales-operations-lead
+  ana-paula-cos:
+    reportsTo: ai-sales-operations-lead
+  wes-cos:
+    reportsTo: ai-sales-operations-lead
+  victoria-cos:
+    reportsTo: ai-sales-operations-lead
+  roman-cos:
+    reportsTo: ai-sales-operations-lead
+  lee-cos:
+    reportsTo: ai-sales-operations-lead
+  carlos-cos:
+    reportsTo: ai-sales-operations-lead
+  daniel-cos:
+    reportsTo: ai-sales-operations-lead
+  gabriel-cos:
+    reportsTo: ai-sales-operations-lead
+
+  # Mortgage agents
+  mortgage-prospect-assistant:
+    reportsTo: ai-sales-operations-lead
+  mortgage-borrower-agent:
+    reportsTo: ai-sales-operations-lead
+  mortgage-loan-officer-agent:
+    reportsTo: ai-sales-operations-lead
+  mortgage-underwriter-agent:
+    reportsTo: ai-sales-operations-lead
+  mortgage-ceo-agent:
+    reportsTo: ai-sales-operations-lead

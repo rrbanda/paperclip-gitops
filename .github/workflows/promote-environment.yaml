@@ -1,0 +1,44 @@
+name: Promote Environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Source environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+      target:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - prod
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate promotion path
+        run: |
+          if [ "${{ inputs.source }}" = "dev" ] && [ "${{ inputs.target }}" = "prod" ]; then
+            echo "ERROR: Cannot promote directly from dev to prod. Go through staging."
+            exit 1
+          fi
+
+      - name: Compare environments
+        run: |
+          echo "=== Changes from ${{ inputs.source }} to ${{ inputs.target }} ==="
+          diff -u platform/environments/${{ inputs.source }}/patches/ \
+               platform/environments/${{ inputs.target }}/patches/ || true
+
+      - name: Trigger ArgoCD sync
+        run: |
+          echo "Environment ${{ inputs.target }} will be synced by ArgoCD on next poll."
+          echo "For immediate sync, use: oc annotate applications.argoproj.io paperclip-${{ inputs.target }} -n openshift-gitops argocd.argoproj.io/refresh=hard --overwrite"
