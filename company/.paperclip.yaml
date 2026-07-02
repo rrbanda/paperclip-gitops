@@ -1,0 +1,356 @@
+schema: paperclip/v1
+
+company:
+  issuePrefix: RED
+
+agents:
+  ai-sales-operations-lead:
+    adapter:
+      type: gemini_local
+    role: ceo
+    desiredSkills:
+      - paperclip-coordination
+      - task-planning
+
+  rhoai-solutions-lead:
+    adapter:
+      type: gemini_local
+    role: cto
+    desiredSkills:
+      - paperclip-coordination
+
+  pitch-builder:
+    adapter:
+      type: gemini_local
+    role: engineer
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - pitch-builder
+
+  rfq-response-agent:
+    adapter:
+      type: gemini_local
+    role: engineer
+    reportsTo: rhoai-solutions-lead
+    desiredSkills:
+      - rfq-filler
+
+  sales-progress-monitor:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - salescloud-pipeline
+
+  openshift-attach-monitor:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - openshift-attach
+
+  rhoai-demo-navigator:
+    adapter:
+      type: gemini_local
+    role: engineer
+    reportsTo: rhoai-solutions-lead
+    desiredSkills:
+      - rhoai-demo-navigator
+
+  field-ops-assistant:
+    adapter:
+      type: gemini_local
+    role: devops
+    reportsTo: rhoai-solutions-lead
+    desiredSkills:
+      - field-ops
+
+  sales-simulation-engine:
+    adapter:
+      type: gemini_local
+    role: researcher
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - sales-simulation
+
+  rfp-response-analyst:
+    adapter:
+      type: gemini_local
+    role: engineer
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - rfq-filler
+
+  competitive-intelligence-analyst:
+    adapter:
+      type: gemini_local
+    role: researcher
+    reportsTo: ai-sales-operations-lead
+
+  customer-engagement-prep:
+    adapter:
+      type: gemini_local
+    role: general
+    reportsTo: ai-sales-operations-lead
+
+  technical-content-writer:
+    adapter:
+      type: gemini_local
+    role: engineer
+    reportsTo: ai-sales-operations-lead
+
+  workshop-demo-builder:
+    adapter:
+      type: gemini_local
+    role: engineer
+    reportsTo: ai-sales-operations-lead
+
+  agentic-ai-architect:
+    adapter:
+      type: gemini_local
+    role: engineer
+    reportsTo: rhoai-solutions-lead
+
+  architecture-designer:
+    adapter:
+      type: gemini_local
+    role: engineer
+    reportsTo: rhoai-solutions-lead
+
+  evaluation-and-safety-engineer:
+    adapter:
+      type: gemini_local
+    role: engineer
+    reportsTo: rhoai-solutions-lead
+
+  inference-and-serving-expert:
+    adapter:
+      type: gemini_local
+    role: engineer
+    reportsTo: rhoai-solutions-lead
+
+  migration-and-modernization-guide:
+    adapter:
+      type: gemini_local
+    role: researcher
+    reportsTo: rhoai-solutions-lead
+
+  poc-and-sizing-calculator:
+    adapter:
+      type: gemini_local
+    role: engineer
+    reportsTo: rhoai-solutions-lead
+
+  training-and-tuning-specialist:
+    adapter:
+      type: gemini_local
+    role: engineer
+    reportsTo: rhoai-solutions-lead
+
+  # Chief of Staff agents
+  monica-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  raghuram-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  brian-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  patrick-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  jennifer-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  jason-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  tarik-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  hemang-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  julio-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  ana-paula-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  wes-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  victoria-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  roman-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  lee-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  carlos-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  daniel-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  gabriel-cos:
+    adapter:
+      type: gemini_local
+    role: pm
+    reportsTo: ai-sales-operations-lead
+    desiredSkills:
+      - chief-of-staff
+
+  # Mortgage HTTP agents
+  mortgage-prospect-assistant:
+    adapter:
+      type: http
+      config:
+        url: http://mortgage-ai-api.mortgage-ai.svc:8000/api/chat/message
+        method: POST
+        timeoutMs: 60000
+    role: general
+    reportsTo: ai-sales-operations-lead
+
+  mortgage-borrower-agent:
+    adapter:
+      type: http
+      config:
+        url: http://mortgage-ai-api.mortgage-ai.svc:8000/api/borrower/chat/message
+        method: POST
+        timeoutMs: 60000
+    role: general
+    reportsTo: ai-sales-operations-lead
+
+  mortgage-loan-officer-agent:
+    adapter:
+      type: http
+      config:
+        url: http://mortgage-ai-api.mortgage-ai.svc:8000/api/loan-officer/chat/message
+        method: POST
+        timeoutMs: 60000
+    role: pm
+    reportsTo: ai-sales-operations-lead
+
+  mortgage-underwriter-agent:
+    adapter:
+      type: http
+      config:
+        url: http://mortgage-ai-api.mortgage-ai.svc:8000/api/underwriter/chat/message
+        method: POST
+        timeoutMs: 60000
+    role: engineer
+    reportsTo: ai-sales-operations-lead
+
+  mortgage-ceo-agent:
+    adapter:
+      type: http
+      config:
+        url: http://mortgage-ai-api.mortgage-ai.svc:8000/api/ceo/chat/message
+        method: POST
+        timeoutMs: 60000
+    role: ceo
+    reportsTo: ai-sales-operations-lead
+
+projects:
+  weekly-sales-operations:
+    status: in_progress
+  rhoai-pre-sales:
+    status: in_progress
+  sales-enablement:
+    status: in_progress
+  rfq-and-compliance:
+    status: in_progress
+  customer-engagements:
+    status: in_progress
+  field-operations:
+    status: in_progress
+  onboarding:
+    status: in_progress
+  mortgage-ai-agents:
+    status: in_progress
