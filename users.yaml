@@ -1,0 +1,7 @@
+users:
+  - email: rbanda@redhat.com
+    name: Raghuram Banda
+    role: owner
+  - email: mlivings@redhat.com
+    name: Monica Livingston
+    role: owner

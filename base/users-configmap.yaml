@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: paperclip-users
+data:
+  users.yaml: |
+    users:
+      - email: rbanda@redhat.com
+        name: Raghuram Banda
+        role: owner
+      - email: mlivings@redhat.com
+        name: Monica Livingston
+        role: owner

@@ -1,0 +1,104 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: provision-users
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: provisioner
+          image: curlimages/curl:8.7.1
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              PAPERCLIP_URL="http://paperclip:3100"
+              COMPANY_ID=""
+
+              echo "=== Paperclip User Provisioner ==="
+              echo "Waiting for Paperclip to be ready..."
+              for i in $(seq 1 30); do
+                if curl -sf "$PAPERCLIP_URL/api/health" > /dev/null 2>&1; then
+                  echo "Paperclip is ready."
+                  break
+                fi
+                sleep 2
+              done
+
+              # Get company ID (first company)
+              COMPANY_ID=$(curl -sf "$PAPERCLIP_URL/api/companies" | sed -n 's/.*"id":"\([^"]*\)".*/\1/p' | head -1)
+              if [ -z "$COMPANY_ID" ]; then
+                echo "WARNING: No company found. Users will be created without membership."
+              else
+                echo "Company ID: $COMPANY_ID"
+              fi
+
+              # Parse users.yaml (simple line-based parsing for busybox sh)
+              echo ""
+              echo "--- Processing users ---"
+
+              # User 1: rbanda@redhat.com
+              EMAIL="rbanda@redhat.com"
+              NAME="Raghuram Banda"
+              ROLE="owner"
+              PASSWORD=$(cat /secrets/rbanda@redhat.com 2>/dev/null || echo "")
+              if [ -n "$PASSWORD" ]; then
+                echo "Provisioning: $EMAIL ($NAME) as $ROLE"
+                RESULT=$(curl -sf -X POST "$PAPERCLIP_URL/api/auth/sign-up/email" \
+                  -H "Content-Type: application/json" \
+                  -d "{\"email\":\"$EMAIL\",\"password\":\"$PASSWORD\",\"name\":\"$NAME\"}" 2>&1 || true)
+                if echo "$RESULT" | grep -q '"id"'; then
+                  USER_ID=$(echo "$RESULT" | sed -n 's/.*"id":"\([^"]*\)".*/\1/p')
+                  echo "  Created user: $USER_ID"
+                elif echo "$RESULT" | grep -q 'ALREADY_EXISTS'; then
+                  echo "  User already exists (OK)"
+                else
+                  echo "  Result: $RESULT"
+                fi
+              else
+                echo "SKIP: No password found for $EMAIL"
+              fi
+
+              # User 2: mlivings@redhat.com
+              EMAIL="mlivings@redhat.com"
+              NAME="Monica Livingston"
+              ROLE="owner"
+              PASSWORD=$(cat /secrets/mlivings@redhat.com 2>/dev/null || echo "")
+              if [ -n "$PASSWORD" ]; then
+                echo "Provisioning: $EMAIL ($NAME) as $ROLE"
+                RESULT=$(curl -sf -X POST "$PAPERCLIP_URL/api/auth/sign-up/email" \
+                  -H "Content-Type: application/json" \
+                  -d "{\"email\":\"$EMAIL\",\"password\":\"$PASSWORD\",\"name\":\"$NAME\"}" 2>&1 || true)
+                if echo "$RESULT" | grep -q '"id"'; then
+                  USER_ID=$(echo "$RESULT" | sed -n 's/.*"id":"\([^"]*\)".*/\1/p')
+                  echo "  Created user: $USER_ID"
+                elif echo "$RESULT" | grep -q 'ALREADY_EXISTS'; then
+                  echo "  User already exists (OK)"
+                else
+                  echo "  Result: $RESULT"
+                fi
+              else
+                echo "SKIP: No password found for $EMAIL"
+              fi
+
+              echo ""
+              echo "=== Provisioning complete ==="
+          volumeMounts:
+            - name: users-config
+              mountPath: /config
+              readOnly: true
+            - name: user-passwords
+              mountPath: /secrets
+              readOnly: true
+      volumes:
+        - name: users-config
+          configMap:
+            name: paperclip-users
+        - name: user-passwords
+          secret:
+            secretName: paperclip-user-passwords

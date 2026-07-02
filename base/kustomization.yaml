@@ -12,3 +12,6 @@ resources:
   - paperclip-service.yaml
   - paperclip-route.yaml
   - paperclip-buildconfig.yaml
+  - users-configmap.yaml
+  - external-secret.yaml
+  - provision-users-job.yaml
