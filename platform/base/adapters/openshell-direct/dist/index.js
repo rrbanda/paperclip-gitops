@@ -85,11 +85,32 @@ async function execute(ctx) {
         if (ctx.onSpawn) {
             await ctx.onSpawn({ pid: 0, processGroupId: null, startedAt: new Date().toISOString() });
         }
+        // Get sandbox ID for exec
+        const sbInfo = await new Promise((resolve, reject) => {
+            const { getClient: _gc, ...mod } = require("./openshell-client.js");
+            // Use the client directly
+            const grpc = require("@grpc/grpc-js");
+            const protoLoader = require("@grpc/proto-loader");
+            const protoPath = "/paperclip/adapters/openshell-direct/proto/openshell.proto";
+            const pkgDef = protoLoader.loadSync(protoPath, {
+                keepCase: false, longs: String, enums: String, defaults: true, oneofs: true,
+                includeDirs: ["/paperclip/adapters/openshell-direct/proto"],
+            });
+            const proto = grpc.loadPackageDefinition(pkgDef);
+            const c = new proto.openshell.v1.OpenShell(endpoint, grpc.credentials.createInsecure());
+            c.GetSandbox({ name: sandboxName }, { deadline: Date.now() + 10000 }, (err, res) => {
+                if (err)
+                    return reject(err);
+                resolve(res?.sandbox);
+            });
+        });
+        const sandboxId = sbInfo?.metadata?.id;
+        await onLog("stdout", `[openshell] Sandbox ID: ${sandboxId}\n`);
         const cmd = [
             "sh", "-c",
-            `${agentCommand} --print "${wakePrompt.replace(/"/g, '\\"')}" 2>&1 || echo "[openshell] Agent exited with code $?"`,
+            `${agentCommand} "${wakePrompt.replace(/"/g, '\\"')}" 2>&1 || echo "[openshell] Agent exited with code $?"`,
         ];
-        const result = await execInSandbox(endpoint, sandboxName, cmd, {
+        const result = await execInSandbox(endpoint, sandboxId, cmd, {
             timeoutSecs,
         });
         // Stream output

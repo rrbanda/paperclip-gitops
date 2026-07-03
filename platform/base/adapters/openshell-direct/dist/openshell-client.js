@@ -10,7 +10,18 @@ import * as protoLoader from "@grpc/proto-loader";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROTO_PATH = resolve(__dirname, "../proto/openshell.proto");
+const PROTO_PATH_RELATIVE = resolve(__dirname, "../proto/openshell.proto");
+const PROTO_PATH_ABSOLUTE = "/paperclip/adapters/openshell-direct/proto/openshell.proto";
+const PROTO_PATH = existsSync(PROTO_PATH_RELATIVE) ? PROTO_PATH_RELATIVE : PROTO_PATH_ABSOLUTE;
+function existsSync(p) {
+    try {
+        require("fs").accessSync(p);
+        return true;
+    }
+    catch {
+        return false;
+    }
+}
 let _client = null;
 function getClient(endpoint) {
     if (_client)
@@ -89,7 +100,7 @@ export async function waitForSandboxReady(endpoint, name, timeoutMs = 120000) {
     }
     throw new Error(`Sandbox ${name} did not become ready within ${timeoutMs}ms`);
 }
-export async function execInSandbox(endpoint, name, command, opts) {
+export async function execInSandbox(endpoint, sandboxId, command, opts) {
     const client = getClient(endpoint);
     return new Promise((resolve, reject) => {
         const deadline = Date.now() + ((opts?.timeoutSecs || 600) + 30) * 1000;
@@ -97,22 +108,18 @@ export async function execInSandbox(endpoint, name, command, opts) {
         let stderr = "";
         let exitCode = -1;
         const stream = client.ExecSandbox({
-            name,
+            sandboxId,
             command,
             environment: opts?.env || {},
-            timeout_seconds: opts?.timeoutSecs || 600,
+            timeoutSeconds: opts?.timeoutSecs || 600,
         }, { deadline });
-        stream.on("data", (chunk) => {
-            if (chunk.stdout)
-                stdout += chunk.stdout;
-            if (chunk.stderr)
-                stderr += chunk.stderr;
-            if (chunk.exitCode !== undefined && chunk.exitCode !== null) {
-                exitCode = chunk.exitCode;
-            }
-            if (chunk.exit_code !== undefined && chunk.exit_code !== null) {
-                exitCode = chunk.exit_code;
-            }
+        stream.on("data", (event) => {
+            if (event.stdout)
+                stdout += Buffer.from(event.stdout.data).toString();
+            if (event.stderr)
+                stderr += Buffer.from(event.stderr.data).toString();
+            if (event.exit)
+                exitCode = event.exit.exitCode;
         });
         stream.on("end", () => {
             resolve({ stdout, stderr, exitCode });

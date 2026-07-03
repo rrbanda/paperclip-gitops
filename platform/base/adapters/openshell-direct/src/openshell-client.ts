@@ -11,7 +11,13 @@ import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROTO_PATH = resolve(__dirname, "../proto/openshell.proto");
+const PROTO_PATH_RELATIVE = resolve(__dirname, "../proto/openshell.proto");
+const PROTO_PATH_ABSOLUTE = "/paperclip/adapters/openshell-direct/proto/openshell.proto";
+const PROTO_PATH = existsSync(PROTO_PATH_RELATIVE) ? PROTO_PATH_RELATIVE : PROTO_PATH_ABSOLUTE;
+
+function existsSync(p: string): boolean {
+  try { require("fs").accessSync(p); return true; } catch { return false; }
+}
 
 let _client: any = null;
 
@@ -127,7 +133,7 @@ export interface ExecResult {
 
 export async function execInSandbox(
   endpoint: string,
-  name: string,
+  sandboxId: string,
   command: string[],
   opts?: { timeoutSecs?: number; env?: Record<string, string> }
 ): Promise<ExecResult> {
@@ -140,21 +146,16 @@ export async function execInSandbox(
     let exitCode = -1;
 
     const stream = client.ExecSandbox({
-      name,
+      sandboxId,
       command,
       environment: opts?.env || {},
-      timeout_seconds: opts?.timeoutSecs || 600,
+      timeoutSeconds: opts?.timeoutSecs || 600,
     }, { deadline });
 
-    stream.on("data", (chunk: any) => {
-      if (chunk.stdout) stdout += chunk.stdout;
-      if (chunk.stderr) stderr += chunk.stderr;
-      if (chunk.exitCode !== undefined && chunk.exitCode !== null) {
-        exitCode = chunk.exitCode;
-      }
-      if (chunk.exit_code !== undefined && chunk.exit_code !== null) {
-        exitCode = chunk.exit_code;
-      }
+    stream.on("data", (event: any) => {
+      if (event.stdout) stdout += Buffer.from(event.stdout.data).toString();
+      if (event.stderr) stderr += Buffer.from(event.stderr.data).toString();
+      if (event.exit) exitCode = event.exit.exitCode;
     });
 
     stream.on("end", () => {
