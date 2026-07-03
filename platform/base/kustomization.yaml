@@ -11,6 +11,7 @@ resources:
   - core/paperclip-service.yaml
   - core/paperclip-route.yaml
   - core/paperclip-buildconfig.yaml
+  - core/adapter-plugins-configmap.yaml
 
   # Satellite applications
   - apps/atlas.yaml

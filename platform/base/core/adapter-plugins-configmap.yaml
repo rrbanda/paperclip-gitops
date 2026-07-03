@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: paperclip-adapter-plugins
+data:
+  adapter-plugins.json: |
+    [
+      {
+        "packageName": "adapter-openshell-direct",
+        "localPath": "/paperclip/adapters/openshell-direct",
+        "type": "openshell_direct",
+        "installedAt": "2026-07-03T22:00:00.000Z"
+      }
+    ]

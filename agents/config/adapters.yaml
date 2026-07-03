@@ -69,6 +69,19 @@ agents:
       method: POST
       timeoutMs: 60000
 
+  # OpenShell sandboxed agents (change any agent's adapter to run in isolated container)
+  # To switch an agent to OpenShell, set adapter: openshell_direct
+  openshell-test-agent:
+    adapter: openshell_direct
+    config:
+      gatewayEndpoint: openshell.openshell.svc:8080
+      sandboxImage: ghcr.io/nvidia/openshell-community/sandboxes/base:latest
+      agentCommand: echo
+      cpu: "1"
+      memory: 2Gi
+      reuseStrategy: per-run
+      timeoutSecs: 120
+
   mortgage-borrower-agent:
     adapter: http
     config:

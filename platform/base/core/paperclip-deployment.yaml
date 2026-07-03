@@ -12,6 +12,37 @@ spec:
       labels:
         app: paperclip
     spec:
+      initContainers:
+        - name: install-adapters
+          image: image-registry.openshift-image-registry.svc:5000/paperclip/paperclip:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              # Copy adapter-plugins.json to PAPERCLIP_HOME
+              cp /config/adapter-plugins.json /paperclip/adapter-plugins.json
+
+              # Ensure adapter directory exists with deps
+              ADAPTER_DIR=/paperclip/adapters/openshell-direct
+              if [ ! -d "$ADAPTER_DIR/node_modules/@grpc" ]; then
+                echo "Installing OpenShell adapter dependencies..."
+                mkdir -p "$ADAPTER_DIR"
+                # Copy adapter source from gitops-managed configmap if not present
+                if [ ! -f "$ADAPTER_DIR/package.json" ]; then
+                  echo "Adapter source not found on PVC -- skipping (must be seeded first)"
+                else
+                  cd "$ADAPTER_DIR"
+                  npm install --production --quiet 2>&1
+                  echo "Dependencies installed."
+                fi
+              else
+                echo "OpenShell adapter already installed."
+              fi
+          volumeMounts:
+            - name: paperclip-data
+              mountPath: /paperclip
+            - name: adapter-config
+              mountPath: /config
       containers:
         - name: paperclip
           image: image-registry.openshift-image-registry.svc:5000/paperclip/paperclip:latest
@@ -74,3 +105,6 @@ spec:
         - name: paperclip-data
           persistentVolumeClaim:
             claimName: paperclip-data
+        - name: adapter-config
+          configMap:
+            name: paperclip-adapter-plugins
